@@ -2,8 +2,6 @@
 
 #include "Renderer.h"
 
-#include <iostream>
-
 unsigned int VertexBufferElement::GetSizeOfType(unsigned int type)
 {
 	switch (type)

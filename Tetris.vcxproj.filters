@@ -57,6 +57,9 @@
     <ClCompile Include="src\VertexBufferLayout.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\Shader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="3rdparty\glm\detail\func_common.inl">
@@ -1391,6 +1394,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\VertexBufferLayout.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
