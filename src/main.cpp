@@ -51,7 +51,7 @@ int main(void)
 	while (!glfwWindowShouldClose(window))
 	{
 		Renderer::Clear();
-		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -72,6 +72,9 @@ int main(void)
 		ImGui::SetWindowPos({ 1100.0f, -30.0f });
 		ImGui::SetWindowSize({ 500.0f, 930.0f });
 		ImGui::SetWindowFontScale(1.5f);
+
+
+
 		ImGui::End();
 
 		ImGui::Render();
