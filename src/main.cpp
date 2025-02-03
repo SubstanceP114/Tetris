@@ -33,7 +33,7 @@ int main(void)
 
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
-
+	
 	glfwSwapInterval(1);
 
 	if (glewInit() != GLEW_OK)
@@ -49,6 +49,8 @@ int main(void)
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 150");
 
+	Scene::Current().Init();
+	
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{

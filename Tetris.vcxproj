@@ -141,6 +141,7 @@
     <ClCompile Include="3rdparty\imgui\imgui_tables.cpp" />
     <ClCompile Include="3rdparty\imgui\imgui_widgets.cpp" />
     <ClCompile Include="3rdparty\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\gameplay\Map.cpp" />
     <ClCompile Include="src\gameplay\Scene.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\opengl\IndexBuffer.cpp" />
@@ -595,6 +596,8 @@
     <ClInclude Include="3rdparty\imgui\imstb_textedit.h" />
     <ClInclude Include="3rdparty\imgui\imstb_truetype.h" />
     <ClInclude Include="3rdparty\stb_image\stb_image.h" />
+    <ClInclude Include="src\gameplay\Camera.h" />
+    <ClInclude Include="src\gameplay\Map.h" />
     <ClInclude Include="src\gameplay\Scene.h" />
     <ClInclude Include="src\gameplay\Object.h" />
     <ClInclude Include="src\opengl\IndexBuffer.h" />

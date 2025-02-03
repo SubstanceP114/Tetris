@@ -1,5 +1,12 @@
 #include "Scene.h"
 
+#include "Map.h"
+
+void Scene::Init()
+{
+	m_Objects.push_back(Map::Current());
+}
+
 void Scene::Update(float deltaTime)
 {
 	for (Object* object : m_Objects)
@@ -8,7 +15,7 @@ void Scene::Update(float deltaTime)
 			object = nullptr;
 		}
 	for (auto it = m_Objects.begin(); it != m_Objects.end();)
-		if (*it) m_Objects.erase(it);
+		if (*it == nullptr) it = m_Objects.erase(it);
 		else it++;
 
 	while (!m_WaitQueue.empty()) {

@@ -16,6 +16,7 @@ private:
 	Scene(const Scene& scene) = delete;
 	const Scene& operator = (const Scene& scene) = delete;
 public:
+	void Init();
 	void Update(float deltaTime);
 	void OnGuiLeft();
 	void OnGuiRight();
