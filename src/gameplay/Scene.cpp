@@ -1,15 +1,5 @@
 #include "Scene.h"
 
-Scene::Scene()
-{
-	m_Current = this;
-}
-
-Scene::~Scene()
-{
-	for (Object* object : m_Objects) if (object) delete object;
-}
-
 void Scene::Update(float deltaTime)
 {
 	for (Object* object : m_Objects)
@@ -41,6 +31,23 @@ void Scene::OnGuiLeft()
 void Scene::OnGuiRight()
 {
 	for (Object* object : m_Objects) if (object) object->OnGuiRight();
+}
+
+void Scene::Delete()
+{
+	for (Object* object : m_Objects) if (object) delete object;
+	while (!m_WaitQueue.empty())
+	{
+		Object* object = m_WaitQueue.front();
+		if (object) delete object;
+		m_WaitQueue.pop();
+	}
+}
+
+Scene& Scene::Current()
+{
+	static Scene scene;
+	return scene;
 }
 
 void Scene::Add(Object* object)

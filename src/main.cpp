@@ -45,11 +45,9 @@ int main(void)
 
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
-	ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = { 0.3f,0.3f,0.3f,1.0f };
+	ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = { 0.3f, 0.3f, 0.3f, 1.0f };
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 150");
-
-	std::unique_ptr<Scene> scene = std::make_unique<Scene>();
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -62,21 +60,21 @@ int main(void)
 		ImGui::NewFrame();
 
 		float deltaTime = ImGui::GetIO().DeltaTime;
-		scene->Update(deltaTime);
+		Scene::Current().Update(deltaTime);
 
 		ImGui::Begin("Left Panel");
 		ImGui::SetWindowPos({ 0.0f, -30.0f });
 		ImGui::SetWindowSize({ 500.0f, 930.0f });
 		ImGui::SetWindowFontScale(1.5f);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", deltaTime * 1000, ImGui::GetIO().Framerate);
-		scene->OnGuiLeft();
+		Scene::Current().OnGuiLeft();
 		ImGui::End();
 
 		ImGui::Begin("Right Panel");
 		ImGui::SetWindowPos({ 1100.0f, -30.0f });
 		ImGui::SetWindowSize({ 500.0f, 930.0f });
 		ImGui::SetWindowFontScale(1.5f);
-		scene->OnGuiRight();
+		Scene::Current().OnGuiRight();
 		ImGui::End();
 
 		ImGui::Render();
@@ -85,6 +83,8 @@ int main(void)
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+
+	Scene::Current().Delete();
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();

@@ -9,18 +9,19 @@ class Scene
 {
 private:
 	std::vector<Object*> m_Objects;
-	static Scene* m_Current;
-
 	std::queue<Object*> m_WaitQueue;
-public:
-	Scene();
-	~Scene();
 
+	Scene() {}
+	~Scene() {}
+	Scene(const Scene& scene) = delete;
+	const Scene& operator = (const Scene& scene) = delete;
+public:
 	void Update(float deltaTime);
 	void OnGuiLeft();
 	void OnGuiRight();
+	void Delete();
 
-	inline static Scene* Current() { return m_Current; }
+	static Scene& Current();
 
 	void Add(Object* object);
 };
