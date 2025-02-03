@@ -67,6 +67,9 @@ int main(void)
 				delete object;
 				object = nullptr;
 			}
+		for (auto it = objects.begin(); it != objects.end();)
+			if (*it) objects.erase(it);
+			else it++;
 
 		float deltaTime = ImGui::GetIO().DeltaTime;
 
