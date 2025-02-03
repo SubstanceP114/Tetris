@@ -60,6 +60,9 @@
     <ClCompile Include="src\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\gameplay\Scene.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="3rdparty\glm\detail\func_common.inl">
@@ -478,6 +481,7 @@
     </None>
     <None Include="res\shaders\Color.shader" />
     <None Include="res\shaders\Texture.shader" />
+    <None Include="res\shaders\Tint.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3rdparty\GLEW\include\GL\glew.h">
@@ -1402,6 +1406,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\gameplay\Object.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gameplay\Scene.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

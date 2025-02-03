@@ -9,7 +9,7 @@ public:
 
 	virtual void Init() {}
 	virtual void Update(float deltaTime) {}
-	virtual void OnRender() {}
+	virtual void Render() {}
 	virtual void OnGuiLeft() {}
 	virtual void OnGuiRight() {}
 	virtual void OnDestroy() {}

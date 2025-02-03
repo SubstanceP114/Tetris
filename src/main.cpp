@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-#include "Object.h"
+#include "Scene.h"
 
 int main(void)
 {
@@ -49,8 +49,7 @@ int main(void)
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 150");
 
-	std::vector<Object*> objects;
-	for (Object* object : objects) object->Init();
+	std::unique_ptr<Scene> scene = std::make_unique<Scene>();
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -62,36 +61,23 @@ int main(void)
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		for (Object* object : objects)
-			if (object && object->IsDestroyed()) {
-				delete object;
-				object = nullptr;
-			}
-		for (auto it = objects.begin(); it != objects.end();)
-			if (*it) objects.erase(it);
-			else it++;
-
 		float deltaTime = ImGui::GetIO().DeltaTime;
-
-		for (Object* object : objects) if (object) object->Update(deltaTime);
-		for (Object* object : objects) if (object) object->OnRender();
+		scene->Update(deltaTime);
 
 		ImGui::Begin("Left Panel");
 		ImGui::SetWindowPos({ 0.0f, -30.0f });
 		ImGui::SetWindowSize({ 500.0f, 930.0f });
 		ImGui::SetWindowFontScale(1.5f);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", deltaTime * 1000, ImGui::GetIO().Framerate);
-		for (Object* object : objects) if (object) object->OnGuiLeft();
+		scene->OnGuiLeft();
 		ImGui::End();
 
 		ImGui::Begin("Right Panel");
 		ImGui::SetWindowPos({ 1100.0f, -30.0f });
 		ImGui::SetWindowSize({ 500.0f, 930.0f });
 		ImGui::SetWindowFontScale(1.5f);
-		for (Object* object : objects) if (object) object->OnGuiRight();
+		scene->OnGuiRight();
 		ImGui::End();
-
-		for (Object* object : objects) if (object && object->IsDestroyed()) object->OnDestroy();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -99,8 +85,6 @@ int main(void)
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
-
-	for (Object* object : objects) if (object) delete object;
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
