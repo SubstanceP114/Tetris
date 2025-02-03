@@ -288,6 +288,8 @@
     <None Include="3rdparty\glm\gtx\vector_angle.inl" />
     <None Include="3rdparty\glm\gtx\vector_query.inl" />
     <None Include="3rdparty\glm\gtx\wrap.inl" />
+    <None Include="res\shaders\Color.shader" />
+    <None Include="res\shaders\Texture.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3rdparty\GLEW\include\GL\glew.h" />
