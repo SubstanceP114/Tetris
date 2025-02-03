@@ -141,6 +141,8 @@
     <ClCompile Include="3rdparty\imgui\imgui_tables.cpp" />
     <ClCompile Include="3rdparty\imgui\imgui_widgets.cpp" />
     <ClCompile Include="3rdparty\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -585,6 +587,8 @@
     <ClInclude Include="3rdparty\imgui\imstb_textedit.h" />
     <ClInclude Include="3rdparty\imgui\imstb_truetype.h" />
     <ClInclude Include="3rdparty\stb_image\stb_image.h" />
+    <ClInclude Include="src\Renderer.h" />
+    <ClInclude Include="src\IndexBuffer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

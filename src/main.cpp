@@ -1,5 +1,4 @@
-#include "glew/glew.h"
-#include "glfw/glfw3.h"
+#include "Renderer.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -50,7 +49,7 @@ int main(void)
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
-		glClear(GL_COLOR_BUFFER_BIT);
+		Renderer::Clear();
 		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 
 		ImGui_ImplOpenGL3_NewFrame();
