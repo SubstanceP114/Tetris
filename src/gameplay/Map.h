@@ -21,6 +21,7 @@ private:
 
 	Cell m_Cells[12][18];
 	int m_LineCnt;
+	float m_Timer;
 
 	std::unique_ptr<VertexArray> m_VertexArray;
 	std::unique_ptr<VertexBuffer> m_VertexBuffer;

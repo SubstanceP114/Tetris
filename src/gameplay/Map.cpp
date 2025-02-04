@@ -1,10 +1,11 @@
 #include "Map.h"
 
 #include "Block.h"
-
 #include "Camera.h"
 
 #include "imgui/imgui.h"
+
+#define lerp(min, max, ratio) (min) * (1.0f - (ratio)) + (max) * (ratio)
 
 const float Cell::OUTER = 50.0f;
 const float Cell::INNER = Cell::OUTER * 0.96f;
@@ -12,7 +13,8 @@ const float Cell::INNER = Cell::OUTER * 0.96f;
 Map* Map::m_Current = nullptr;
 
 Map::Map()
-	:m_Cells(), m_LineCnt(0), m_Vertices(nullptr), m_Indices(nullptr)
+	: m_Cells(), m_LineCnt(0), m_Timer(0.0f)
+	, m_Vertices(nullptr), m_Indices(nullptr)
 {
 }
 
@@ -35,20 +37,20 @@ void Map::Init()
 
 	struct { int x, y; } vertexDirs[] = { {-1,1},{-1,-1},{1,-1},{1,1} };
 	for (int i = 0; i < COLUMN_COUNT; i++)
-		for (int j = 0; j < ROW_COUNT; j++, index += 2, vertex += 4) {
+		for (int j = 0; j < ROW_COUNT; j++, index += 2, vertex += 8) {
 			m_Cells[i][j] = { (i + 0.5f) * Cell::OUTER, (j + 0.5f) * Cell::OUTER, nullptr };
 
 			m_Indices[index] = { { index * 4, index * 4 + 1, index * 4 + 2 }, { index * 4 + 2, index * 4 + 3, index * 4 } };
 			m_Indices[index + 1] = { { index * 4 + 4, index * 4 + 5, index * 4 + 6 }, { index * 4 + 6, index * 4 + 7, index * 4 + 4 } };
 
-			for (int k = 0; k < 4; k++, vertex++) {
-				m_Vertices[vertex] =
+			for (int k = 0; k < 4; k++) {
+				m_Vertices[vertex + k] =
 				{
 					{ vertexDirs[k].x * Cell::OUTER / 2, vertexDirs[k].y * Cell::OUTER / 2 },
 					{ 0.2f, 0.3f, 0.8f, 1.0f },
 					{ m_Cells[i][j].Position.x, m_Cells[i][j].Position.y }
 				};
-				m_Vertices[vertex + 4] =
+				m_Vertices[vertex + 4 + k] =
 				{
 					{ vertexDirs[k].x * Cell::INNER / 2, vertexDirs[k].y * Cell::INNER / 2 },
 					{ 0.1f, 0.1f, 0.1f, 1.0f },
@@ -75,16 +77,22 @@ void Map::Init()
 
 void Map::Update(float deltaTime)
 {
+	const static float HALF = 0.5f;
+	static float timer = 0.0f;
+	m_Timer += deltaTime;
+	timer += deltaTime;
+	if (timer > HALF * 2) timer -= HALF * 2;
+	for (int i = 0, vertex = 0; i < COLUMN_COUNT; i++)
+		for (int j = 0; j < ROW_COUNT; j++, vertex += 8)
+			for (int k = 0; k < 4; k++) {
+				m_Vertices[vertex + k].color.r = lerp(0.2f, 0.8f, (timer > HALF ? HALF * 2 - timer : timer) / HALF);
+				Vec4 color = m_Cells[i][j].Item ? ((Block*)m_Cells[i][j].Item)->GetColor() : Vec4{ 0.1f, 0.1f, 0.1f, 1.0f };
+				m_Vertices[vertex + 4 + k].color = { color.r, color.g, color.b, color.a };
+			}
 }
 
 void Map::Render()
 {
-	for (int i = 0, vertex = 4; i < COLUMN_COUNT; i++)
-		for (int j = 0; j < ROW_COUNT; j++, vertex += 4)
-			for (int k = 0; k < 4; k++) {
-				Vec4 color = m_Cells[i][j].Item ? ((Block*)m_Cells[i][j].Item)->GetColor() : Vec4{ 0.1f, 0.1f, 0.1f, 1.0f };
-				m_Vertices[vertex++].color = { color.r, color.g, color.b, color.a };
-			}
 	m_VertexBuffer->UpdateData(m_Vertices, COLUMN_COUNT * ROW_COUNT * 2 * 4 * sizeof(Vertice));
 	Renderer::Draw(*m_VertexArray, *m_IndexBuffer, *m_Shader);
 }
@@ -93,6 +101,7 @@ void Map::OnGuiLeft()
 {
 	ImGui::SetWindowFontScale(2.0f);
 	ImGui::TextColored({ 0.8f, 0.3f, 0.8f, 1.0f }, "You've cleared %d lines!", m_LineCnt);
+	ImGui::TextColored({ 0.2f, 0.3f, 0.8f, 1.0f }, "It's passed %.3f seconds...", m_Timer);
 	ImGui::SetWindowFontScale(1.5f);
 }
 
