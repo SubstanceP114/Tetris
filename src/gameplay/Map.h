@@ -35,6 +35,10 @@ public:
 
 	static Map* Current();
 
+	inline bool IsValid(int x, int y) const { return x >= 0 && x < COLUMN_COUNT && y >= 0 && y < ROW_COUNT; }
+	inline bool IsEmpty(int x, int y) const { return m_Cells[x][y].Item == nullptr; }
+	inline void SetCell(int x, int y, Object* item) { m_Cells[x][y].Item = item; }
+
 	const int COLUMN_COUNT = 12;
 	const int ROW_COUNT = 18;
 	const struct { const float WIDTH = 600.0f, HEIGHT = 900.0f; } SIZE;

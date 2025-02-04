@@ -66,6 +66,9 @@
     <ClCompile Include="src\gameplay\Map.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\gameplay\Block.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="3rdparty\glm\detail\func_common.inl">
@@ -1419,6 +1422,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\gameplay\Camera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gameplay\Block.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

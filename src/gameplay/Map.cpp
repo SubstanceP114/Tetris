@@ -59,12 +59,14 @@ void Map::Init()
 	delete[] indices;
 	m_VertexBuffer = std::make_unique<VertexBuffer>(vertices, vertexCnt * sizeof(Vertice));
 	delete[] vertices;
+
 	VertexBufferLayout layout;
 	layout.Push<float>(2);
 	layout.Push<float>(4);
 	layout.Push<float>(2);
 	m_VertexArray = std::make_unique<VertexArray>();
 	m_VertexArray->AddBuffer(*m_VertexBuffer, layout);
+
 	m_Shader = std::make_unique<Shader>("res/shaders/Cell.shader");
 	glm::mat4 mvp = Camera::Current().GetProj() * Camera::Current().GetView() * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f));
 	m_Shader->Bind();
