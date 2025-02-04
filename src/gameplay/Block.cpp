@@ -24,6 +24,19 @@ void Block::Rotate(bool anti = true)
 	}
 }
 
+bool Block::Move(Vec2 dir)
+{
+	ForEach([](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, nullptr); });
+	m_Center += dir;
+	if (All([](Vec2 cell) { return Map::Current()->IsValid(cell.x, cell.y) && Map::Current()->IsEmpty(cell.x, cell.y); })) {
+		ForEach([this](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, this); });
+		return true;
+	}
+	m_Center += -dir;
+	ForEach([this](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, this); });
+	return false;
+}
+
 void Block::Switch()
 {
 	m_Current = m_Preview;
@@ -54,19 +67,11 @@ void Block::Update(float deltaTime)
 	if (m_Current != this) return;
 	ForEach([this](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, this); });
 	static float timer = 0.0f;
-	const static float INTERVAL = 1.0f;
+	const static float INTERVAL = 0.2f;
 	timer += deltaTime;
 	if (timer > INTERVAL) {
 		timer = 0.0f;
-		ForEach([](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, nullptr); });
-		m_Center += Vec2{ 0, -1 };
-		if (All([](Vec2 cell) { return Map::Current()->IsValid(cell.x, cell.y) && Map::Current()->IsEmpty(cell.x, cell.y); }))
-			ForEach([this](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, this); });
-		else {
-			m_Center += Vec2{ 0, 1 };
-			ForEach([this](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, this); });
-			Switch();
-		}
+		if (!Move({ 0,-1 })) Switch();
 	}
 }
 

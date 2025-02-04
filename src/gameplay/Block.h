@@ -9,6 +9,7 @@ struct Vec2
 	int x, y;
 	inline Vec2 operator + (const Vec2& other) { return { x + other.x, y + other.y }; }
 	inline void operator += (const Vec2& other) { x += other.x, y += other.y; }
+	inline Vec2 operator - () { return { -x, -y }; }
 };
 struct Vec4 { float r, g, b, a; };
 
@@ -32,6 +33,7 @@ private:
 	}
 
 	void Rotate(bool anti);
+	bool Move(Vec2 dir);
 	void Switch();
 
 	Block(Vec2 cell1, Vec2 cell2, Vec2 cell3);
