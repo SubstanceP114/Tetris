@@ -4,6 +4,7 @@
 #include "Renderer.h"
 
 #include <memory>
+#include <functional>
 
 struct Cell
 {
@@ -30,6 +31,23 @@ private:
 		struct { float x, y; } offset;
 	}*m_Vertices;
 	struct Rectangle { struct { unsigned int p1, p2, p3; }t1, t2; }*m_Indices;
+
+	inline bool All(std::function<bool(const Cell&)> func) const
+	{
+		for (int i = 0; i < COLUMN_COUNT; i++)
+			for (int j = 0; j < ROW_COUNT; j++)
+				if (!func(m_Cells[i][j]))
+					return false;
+		return true;
+	}
+	inline void SetRow(int row, std::function<void(Cell&)> func) { for (int i = 0; i < COLUMN_COUNT; i++) func(m_Cells[i][row]); }
+	inline bool Row(int row, std::function<bool(const Cell&)> func) const
+	{
+		for (int i = 0; i < COLUMN_COUNT; i++)
+			if (!func(m_Cells[i][row]))
+				return false;
+		return true;
+	}
 public:
 	Map();
 	~Map() override;
@@ -45,6 +63,8 @@ public:
 	inline bool IsValid(int x, int y) const { return x >= 0 && x < COLUMN_COUNT && y >= 0 && y < ROW_COUNT; }
 	inline bool IsEmpty(int x, int y) const { return m_Cells[x][y].Item == nullptr; }
 	inline void SetCell(int x, int y, Object* item) { m_Cells[x][y].Item = item; }
+
+	void Refresh();
 
 	const int COLUMN_COUNT = 12;
 	const int ROW_COUNT = 18;

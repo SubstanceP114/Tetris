@@ -43,6 +43,7 @@ void Block::Move(Vec2 dir)
 
 void Block::Switch()
 {
+	Map::Current()->Refresh();
 	m_Current = m_Preview;
 	m_Preview = Random();
 	Scene::Current().Add(m_Preview);
@@ -100,7 +101,7 @@ Block* Block::Random()
 {
 	static std::random_device rd;
 	static std::mt19937 gen(rd());
-	static std::uniform_int_distribution<> color(50, 200);
+	static std::uniform_int_distribution<> color(55, 255);
 	static std::uniform_int_distribution<> index(0, 6);
 	static Block blocks[] = {
 		{{ 1, 0 },{ 2, 0 },{ 3, 0 }},

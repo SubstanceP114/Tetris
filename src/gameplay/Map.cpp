@@ -101,3 +101,18 @@ Map* Map::Current()
 		m_Current = new Map();
 	return m_Current;
 }
+
+void Map::Refresh()
+{
+	for (int i = 0, stride = 0; i < ROW_COUNT; i++)
+		if (Row(i, [](const Cell& cell) { return cell.Item != nullptr; })) {
+			stride++;
+			SetRow(i, [this](Cell& cell)
+				{
+					Object* temp = cell.Item;
+					cell.Item = nullptr;
+					if (All([temp](const Cell& another) { return another.Item != temp; }))temp->Destroy();
+				});
+		}
+		else for (int j = 0; j < COLUMN_COUNT; j++) m_Cells[j][i - stride].Item = m_Cells[j][i].Item;
+}
