@@ -23,6 +23,13 @@ private:
 	std::unique_ptr<VertexBuffer> m_VertexBuffer;
 	std::unique_ptr<IndexBuffer> m_IndexBuffer;
 	std::unique_ptr<Shader> m_Shader;
+
+	struct Vertice {
+		struct { float x, y; } pos;
+		struct { float r, g, b, a; } color;
+		struct { float x, y; } offset;
+	}*m_Vertices;
+	struct Rectangle { struct { unsigned int p1, p2, p3; }t1, t2; }*m_Indices;
 public:
 	Map();
 	~Map() override;
