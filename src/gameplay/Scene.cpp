@@ -3,8 +3,9 @@
 #include "Map.h"
 #include "Block.h"
 
-void Scene::Init()
+void Scene::Init(GLFWwindow* window)
 {
+	m_Window = window;
 	Add(Map::Current());
 	Add(Block::Random());
 	Add(Block::Random());
@@ -58,9 +59,4 @@ Scene& Scene::Current()
 {
 	static Scene scene;
 	return scene;
-}
-
-void Scene::Add(Object* object)
-{
-	m_WaitQueue.push(object);
 }

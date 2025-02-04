@@ -4,37 +4,41 @@
 
 #include <random>
 
+#define ELIF(key, func) \
+else if (!pressed && glfwGetKey(Scene::Current().GetWindow(), (key)) == GLFW_PRESS) { pressed = true; current = (key); (func); }\
+else if (pressed && current == (key) && glfwGetKey(Scene::Current().GetWindow(), (key)) == GLFW_RELEASE) pressed = false
+
 Block* Block::m_Current = nullptr;
 Block* Block::m_Preview = nullptr;
 
 void Block::Rotate(bool anti = true)
 {
-	static auto rotate = [this](bool anti) {
+	static auto rotate = [](bool anti, Vec2 offsets[4]) {
 		for (int i = 1; i < 4; i++) {
-			Vec2 temp = m_Offsets[i];
-			m_Offsets[i] = { temp.y * anti ? -1 : 1, temp.x * anti ? 1 : -1 };
+			Vec2 temp = offsets[i];
+			offsets[i] = { temp.y * (anti ? -1 : 1), temp.x * (anti ? 1 : -1) };
 		}};
 	ForEach([](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, nullptr); });
-	rotate(anti);
+	rotate(anti, m_Offsets);
 	if (All([](Vec2 cell) { return Map::Current()->IsValid(cell.x, cell.y) && Map::Current()->IsEmpty(cell.x, cell.y); }))
 		ForEach([this](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, this); });
 	else {
-		rotate(!anti);
+		rotate(!anti, m_Offsets);
 		ForEach([this](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, this); });
 	}
 }
 
-bool Block::Move(Vec2 dir)
+void Block::Move(Vec2 dir)
 {
 	ForEach([](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, nullptr); });
 	m_Center += dir;
-	if (All([](Vec2 cell) { return Map::Current()->IsValid(cell.x, cell.y) && Map::Current()->IsEmpty(cell.x, cell.y); })) {
+	if (All([](Vec2 cell) { return Map::Current()->IsValid(cell.x, cell.y) && Map::Current()->IsEmpty(cell.x, cell.y); }))
 		ForEach([this](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, this); });
-		return true;
+	else {
+		m_Center += -dir;
+		ForEach([this](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, this); });
+		if (dir.x == 0 && dir.y == -1) Switch();
 	}
-	m_Center += -dir;
-	ForEach([this](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, this); });
-	return false;
 }
 
 void Block::Switch()
@@ -66,13 +70,20 @@ void Block::Update(float deltaTime)
 {
 	if (m_Current != this) return;
 	ForEach([this](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, this); });
+	static bool pressed = false;
+	static unsigned int current = 0;
 	static float timer = 0.0f;
-	const static float INTERVAL = 0.2f;
+	const static float INTERVAL = 1.0f;
 	timer += deltaTime;
 	if (timer > INTERVAL) {
 		timer = 0.0f;
-		if (!Move({ 0,-1 })) Switch();
+		Move({ 0,-1 });
 	}
+	ELIF(GLFW_KEY_S, Move({ 0,-1 }));
+	ELIF(GLFW_KEY_A, Move({ -1, 0 }));
+	ELIF(GLFW_KEY_D, Move({ 1, 0 }));
+	ELIF(GLFW_KEY_Q, Rotate(false));
+	ELIF(GLFW_KEY_E, Rotate(true));
 }
 
 void Block::OnGuiLeft()

@@ -50,7 +50,7 @@ int main(void)
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 150");
 
-	Scene::Current().Init();
+	Scene::Current().Init(window);
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
