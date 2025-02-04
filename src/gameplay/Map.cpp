@@ -1,5 +1,7 @@
 #include "Map.h"
 
+#include "Block.h"
+
 #include "Camera.h"
 
 const float Cell::OUTER = 50.0f;
@@ -75,6 +77,13 @@ void Map::Update(float deltaTime)
 
 void Map::Render()
 {
+	for (int i = 0, vertex = 4; i < COLUMN_COUNT; i++)
+		for (int j = 0; j < ROW_COUNT; j++, vertex += 4)
+			for (int k = 0; k < 4; k++) {
+				Vec4 color = m_Cells[i][j].Item ? ((Block*)m_Cells[i][j].Item)->GetColor() : Vec4{ 0.1f, 0.1f, 0.1f, 1.0f };
+				m_Vertices[vertex++].color = { color.r, color.g, color.b, color.a };
+			}
+	m_VertexBuffer->UpdateData(m_Vertices, COLUMN_COUNT * ROW_COUNT * 2 * 4 * sizeof(Vertice));
 	Renderer::Draw(*m_VertexArray, *m_IndexBuffer, *m_Shader);
 }
 
