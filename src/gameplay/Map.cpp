@@ -4,13 +4,15 @@
 
 #include "Camera.h"
 
+#include "imgui/imgui.h"
+
 const float Cell::OUTER = 50.0f;
 const float Cell::INNER = Cell::OUTER * 0.96f;
 
 Map* Map::m_Current = nullptr;
 
 Map::Map()
-	:m_Cells(), m_Vertices(nullptr), m_Indices(nullptr)
+	:m_Cells(), m_LineCnt(0), m_Vertices(nullptr), m_Indices(nullptr)
 {
 }
 
@@ -89,6 +91,9 @@ void Map::Render()
 
 void Map::OnGuiLeft()
 {
+	ImGui::SetWindowFontScale(2.0f);
+	ImGui::TextColored({ 0.8f, 0.3f, 0.8f, 1.0f }, "You've cleared %d lines!", m_LineCnt);
+	ImGui::SetWindowFontScale(1.5f);
 }
 
 void Map::OnGuiRight()
@@ -106,7 +111,7 @@ void Map::Refresh()
 {
 	for (int i = 0, stride = 0; i < ROW_COUNT; i++)
 		if (Row(i, [](const Cell& cell) { return cell.Item != nullptr; })) {
-			stride++;
+			stride++, m_LineCnt++;
 			SetRow(i, [this](Cell& cell)
 				{
 					Object* temp = cell.Item;

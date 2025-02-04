@@ -46,7 +46,7 @@ int main(void)
 
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
-	ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = { 0.3f, 0.3f, 0.3f, 1.0f };
+	ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = { 0.2f, 0.2f, 0.2f, 1.0f };
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 150");
 
@@ -56,7 +56,7 @@ int main(void)
 	while (!glfwWindowShouldClose(window))
 	{
 		Renderer::Clear();
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();

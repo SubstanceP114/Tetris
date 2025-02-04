@@ -18,7 +18,9 @@ class Map : public Object
 {
 private:
 	static Map* m_Current;
+
 	Cell m_Cells[12][18];
+	int m_LineCnt;
 
 	std::unique_ptr<VertexArray> m_VertexArray;
 	std::unique_ptr<VertexBuffer> m_VertexBuffer;
