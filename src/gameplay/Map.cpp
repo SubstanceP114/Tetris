@@ -71,7 +71,7 @@ void Map::Init()
 	m_VertexArray->AddBuffer(*m_VertexBuffer, layout);
 
 	m_Shader = std::make_unique<Shader>("res/shaders/Cell.shader");
-	glm::mat4 mvp = Camera::Current().GetProj() * Camera::Current().GetView() * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f));
+	glm::mat4 mvp = Camera::Center().GetProj() * Camera::Center().GetView() * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f));
 	m_Shader->Bind();
 	m_Shader->SetUniformMat4f("u_MVP", mvp);
 }

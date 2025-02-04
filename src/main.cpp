@@ -52,6 +52,10 @@ int main(void)
 
 	Scene::Current().Init(window);
 
+	glfwSetFramebufferSizeCallback(window,
+		[](GLFWwindow* window, int width, int height)
+		{ glfwSetWindowSize(window, Scene::Current().SIZE.WIDTH, Scene::Current().SIZE.HEIGHT); });
+
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
@@ -75,7 +79,7 @@ int main(void)
 
 		ImGui::Begin("Right Panel");
 		ImGui::SetWindowPos({ (Scene::Current().SIZE.WIDTH + Map::Current()->SIZE.WIDTH) / 2, -30.0f });
-		ImGui::SetWindowSize({ (Scene::Current().SIZE.WIDTH - Map::Current()->SIZE.WIDTH) / 2, Scene::Current().SIZE.HEIGHT + 30.0f });
+		ImGui::SetWindowSize({ (Scene::Current().SIZE.WIDTH - Map::Current()->SIZE.WIDTH) / 2, 45.0f + 30.0f });
 		ImGui::SetWindowFontScale(1.5f);
 		Scene::Current().OnGuiRight();
 		ImGui::End();

@@ -2,6 +2,8 @@
 
 #include "Scene.h"
 
+#include "imgui/imgui.h"
+
 #include <random>
 
 #define ELIF(key, func) \
@@ -76,6 +78,7 @@ void Block::Init()
 void Block::Update(float deltaTime)
 {
 	if (m_Current != this) return;
+
 	ForEach([this](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, this); });
 	static bool pressed = false;
 	static unsigned int current = 0;
@@ -101,6 +104,9 @@ void Block::OnGuiRight()
 {
 	if (m_Preview != this) return;
 
+	ImGui::SetWindowFontScale(2.5f);
+	ImGui::TextColored({ m_Color.r, m_Color.g, m_Color.b, m_Color.a }, "Next:");
+	ImGui::SetWindowFontScale(1.5f);
 }
 
 Block* Block::Random()
