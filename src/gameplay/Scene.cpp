@@ -4,7 +4,7 @@
 
 void Scene::Init()
 {
-	m_Objects.push_back(Map::Current());
+	Add(Map::Current());
 }
 
 void Scene::Update(float deltaTime)

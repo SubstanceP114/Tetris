@@ -485,6 +485,7 @@
     <None Include="res\shaders\Color.shader" />
     <None Include="res\shaders\Texture.shader" />
     <None Include="res\shaders\Tint.shader" />
+    <None Include="res\shaders\Cell.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3rdparty\GLEW\include\GL\glew.h">

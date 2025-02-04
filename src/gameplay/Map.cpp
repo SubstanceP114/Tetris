@@ -8,6 +8,16 @@ const float Cell::INNER = Cell::OUTER * 0.96f;
 Map* Map::m_Current = nullptr;
 
 Map::Map()
+	:m_Cells()
+{
+}
+
+Map::~Map()
+{
+	m_Current = nullptr;
+}
+
+void Map::Init()
 {
 	int vertexCnt = COLUMN_COUNT * ROW_COUNT * 2 * 4;
 	int rectangleCnt = COLUMN_COUNT * ROW_COUNT * 2;
@@ -17,6 +27,7 @@ Map::Map()
 	struct Vertice {
 		struct { float x, y; } pos;
 		struct { float r, g, b, a; } color;
+		struct { float x, y; } offset;
 	}*vertices = new Vertice[vertexCnt];
 	struct Rectangle { struct { unsigned int p1, p2, p3; }t1, t2; }*indices = new Rectangle[rectangleCnt];
 
@@ -31,19 +42,15 @@ Map::Map()
 			for (int k = 0; k < 4; k++, vertex++) {
 				vertices[vertex] =
 				{
-					{
-						m_Cells[i][j].Position.x + vertexDirs[k].x * Cell::OUTER / 2,
-						m_Cells[i][j].Position.y + vertexDirs[k].y * Cell::OUTER / 2
-					},
-					{ 0.2f, 0.3f, 0.8f, 1.0f }
+					{ vertexDirs[k].x * Cell::OUTER / 2, vertexDirs[k].y * Cell::OUTER / 2 },
+					{ 0.2f, 0.3f, 0.8f, 1.0f },
+					{ m_Cells[i][j].Position.x, m_Cells[i][j].Position.y }
 				};
 				vertices[vertex + 4] =
 				{
-					{
-						m_Cells[i][j].Position.x + vertexDirs[k].x * Cell::INNER / 2,
-						m_Cells[i][j].Position.y + vertexDirs[k].y * Cell::INNER / 2
-					},
-					{ 0.1f, 0.1f, 0.1f, 1.0f }
+					{ vertexDirs[k].x * Cell::INNER / 2, vertexDirs[k].y * Cell::INNER / 2 },
+					{ 0.1f, 0.1f, 0.1f, 1.0f },
+					{ m_Cells[i][j].Position.x, m_Cells[i][j].Position.y }
 				};
 			}
 		}
@@ -55,14 +62,13 @@ Map::Map()
 	VertexBufferLayout layout;
 	layout.Push<float>(2);
 	layout.Push<float>(4);
+	layout.Push<float>(2);
 	m_VertexArray = std::make_unique<VertexArray>();
 	m_VertexArray->AddBuffer(*m_VertexBuffer, layout);
-	m_Shader = std::make_unique<Shader>("res/shaders/Color.shader");
-}
-
-Map::~Map()
-{
-	m_Current = nullptr;
+	m_Shader = std::make_unique<Shader>("res/shaders/Cell.shader");
+	glm::mat4 mvp = Camera::Current().GetProj() * Camera::Current().GetView() * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f));
+	m_Shader->Bind();
+	m_Shader->SetUniformMat4f("u_MVP", mvp);
 }
 
 void Map::Update(float deltaTime)
@@ -71,9 +77,6 @@ void Map::Update(float deltaTime)
 
 void Map::Render()
 {
-	glm::mat4 mvp = Camera::Current().GetProj() * Camera::Current().GetView() * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f));
-	m_Shader->Bind();
-	m_Shader->SetUniformMat4f("u_MVP", mvp);
 	Renderer::Draw(*m_VertexArray, *m_IndexBuffer, *m_Shader);
 }
 
