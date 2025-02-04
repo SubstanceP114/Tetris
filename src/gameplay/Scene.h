@@ -25,4 +25,6 @@ public:
 	static Scene& Current();
 
 	void Add(Object* object);
+
+	const struct { const float WIDTH = 1600.0f, HEIGHT = 900.0f; } SIZE;
 };

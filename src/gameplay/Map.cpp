@@ -23,7 +23,7 @@ Map::Map()
 	const float INNER_SIZE = Cell::SIZE * 0.96f;
 	for (int i = 0; i < COLUMN_COUNT; i++)
 		for (int j = 0; j < ROW_COUNT; j++) {
-			m_Cells[i][j] = { ORIGIN.X + (i + 0.5f) * Cell::SIZE, ORIGIN.Y + (j + 0.5f) * Cell::SIZE, true };
+			m_Cells[i][j] = { (i + 0.5f) * Cell::SIZE, (j + 0.5f) * Cell::SIZE, true };
 
 			indices[index++] = { { vertex, vertex + 1, vertex + 2 }, { vertex + 2, vertex + 3, vertex } };
 			indices[index++] = { { vertex + 4, vertex + 5, vertex + 6 }, { vertex + 6, vertex + 7, vertex + 4 } };

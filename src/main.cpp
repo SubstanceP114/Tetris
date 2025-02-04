@@ -10,6 +10,7 @@
 #include <iostream>
 
 #include "Scene.h"
+#include "Map.h"
 
 int main(void)
 {
@@ -24,7 +25,7 @@ int main(void)
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(1600, 900, "Tetris!", NULL, NULL);
+	window = glfwCreateWindow(Scene::Current().SIZE.WIDTH, Scene::Current().SIZE.HEIGHT, "Tetris!", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -33,7 +34,7 @@ int main(void)
 
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
-	
+
 	glfwSwapInterval(1);
 
 	if (glewInit() != GLEW_OK)
@@ -50,7 +51,7 @@ int main(void)
 	ImGui_ImplOpenGL3_Init("#version 150");
 
 	Scene::Current().Init();
-	
+
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
@@ -66,15 +67,15 @@ int main(void)
 
 		ImGui::Begin("Left Panel");
 		ImGui::SetWindowPos({ 0.0f, -30.0f });
-		ImGui::SetWindowSize({ 500.0f, 930.0f });
+		ImGui::SetWindowSize({ (Scene::Current().SIZE.WIDTH - Map::Current()->SIZE.WIDTH) / 2, Scene::Current().SIZE.HEIGHT + 30.0f });
 		ImGui::SetWindowFontScale(1.5f);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", deltaTime * 1000, ImGui::GetIO().Framerate);
 		Scene::Current().OnGuiLeft();
 		ImGui::End();
 
 		ImGui::Begin("Right Panel");
-		ImGui::SetWindowPos({ 1100.0f, -30.0f });
-		ImGui::SetWindowSize({ 500.0f, 930.0f });
+		ImGui::SetWindowPos({ (Scene::Current().SIZE.WIDTH + Map::Current()->SIZE.WIDTH) / 2, -30.0f });
+		ImGui::SetWindowSize({ (Scene::Current().SIZE.WIDTH - Map::Current()->SIZE.WIDTH) / 2, Scene::Current().SIZE.HEIGHT + 30.0f });
 		ImGui::SetWindowFontScale(1.5f);
 		Scene::Current().OnGuiRight();
 		ImGui::End();
