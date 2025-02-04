@@ -14,7 +14,7 @@ void Scene::Init(GLFWwindow* window)
 void Scene::Update(float deltaTime)
 {
 	for (Object* object : m_Objects)
-		if (object && object->IsDestroyed()) {
+		if (object->IsDestroyed()) {
 			delete object;
 			object = nullptr;
 		}
@@ -29,19 +29,19 @@ void Scene::Update(float deltaTime)
 		m_WaitQueue.pop();
 	}
 
-	for (Object* object : m_Objects) if (object) object->Update(deltaTime);
-	for (Object* object : m_Objects) if (object) object->Render();
-	for (Object* object : m_Objects) if (object && object->IsDestroyed()) object->OnDestroy();
+	for (Object* object : m_Objects) object->Update(deltaTime);
+	for (Object* object : m_Objects) object->Render();
+	for (Object* object : m_Objects) if (object->IsDestroyed()) object->OnDestroy();
 }
 
 void Scene::OnGuiLeft()
 {
-	for (Object* object : m_Objects) if (object) object->OnGuiLeft();
+	for (Object* object : m_Objects) object->OnGuiLeft();
 }
 
 void Scene::OnGuiRight()
 {
-	for (Object* object : m_Objects) if (object) object->OnGuiRight();
+	for (Object* object : m_Objects) object->OnGuiRight();
 }
 
 void Scene::Delete()
