@@ -72,12 +72,13 @@ Block* Block::Random()
 	static std::random_device rd;
 	static std::mt19937 gen(rd());
 	static std::uniform_int_distribution<> color(50, 200);
-	static std::uniform_int_distribution<> index(0, 3);
+	static std::uniform_int_distribution<> index(0, 4);
 	static Block blocks[] = {
 		{{ 1, 0 },{ 2, 0 },{ 3, 0 }},
 		{{ 0,-1 },{-1, 0 },{ 1, 0 }},
 		{{ 0,-1 },{ 1, 0 },{ 2, 0 }},
-		{{ 0,-1 },{ 1, 0 },{ 1, 1 }}
+		{{ 0,-1 },{ 1, 0 },{ 1,-1 }},
+		{{ 0,-1 },{-1, 0 },{ 1,-1 }}
 	};
 	return new Block(blocks[index(gen)], { (float)color(gen) / 255.0f ,(float)color(gen) / 255.0f ,(float)color(gen) / 255.0f ,1.0f });
 }

@@ -56,7 +56,7 @@ void Map::Init()
 		}
 
 	m_IndexBuffer = std::make_unique<IndexBuffer>((unsigned int*)m_Indices, indexCnt, GL_STATIC_DRAW);
-	m_VertexBuffer = std::make_unique<VertexBuffer>(m_Vertices, vertexCnt * sizeof(Vertice), GL_DYNAMIC_DRAW);
+	m_VertexBuffer = std::make_unique<VertexBuffer>(m_Vertices, vertexCnt * sizeof(Vertice), GL_STREAM_DRAW);
 
 	VertexBufferLayout layout;
 	layout.Push<float>(2);
