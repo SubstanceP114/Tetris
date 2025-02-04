@@ -8,8 +8,9 @@
 struct Cell
 {
 	struct { float x, y; } Position;
-	bool Empty;
-	static const float SIZE;
+	Object* Item;
+	static const float OUTER;
+	static const float INNER;
 };
 
 class Map : public Object

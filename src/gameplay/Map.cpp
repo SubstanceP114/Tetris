@@ -2,7 +2,8 @@
 
 #include "Camera.h"
 
-const float Cell::SIZE = 50.0f;
+const float Cell::OUTER = 50.0f;
+const float Cell::INNER = Cell::OUTER * 0.96f;
 
 Map* Map::m_Current = nullptr;
 
@@ -20,33 +21,31 @@ Map::Map()
 	struct Rectangle { struct { unsigned int p1, p2, p3; }t1, t2; }*indices = new Rectangle[rectangleCnt];
 
 	struct { int x, y; } vertexDirs[] = { {-1,1},{-1,-1},{1,-1},{1,1} };
-	const float INNER_SIZE = Cell::SIZE * 0.96f;
 	for (int i = 0; i < COLUMN_COUNT; i++)
-		for (int j = 0; j < ROW_COUNT; j++) {
-			m_Cells[i][j] = { (i + 0.5f) * Cell::SIZE, (j + 0.5f) * Cell::SIZE, true };
+		for (int j = 0; j < ROW_COUNT; j++, index += 2, vertex += 4) {
+			m_Cells[i][j] = { (i + 0.5f) * Cell::OUTER, (j + 0.5f) * Cell::OUTER, nullptr };
 
-			indices[index++] = { { vertex, vertex + 1, vertex + 2 }, { vertex + 2, vertex + 3, vertex } };
-			indices[index++] = { { vertex + 4, vertex + 5, vertex + 6 }, { vertex + 6, vertex + 7, vertex + 4 } };
+			indices[index] = { { index * 4, index * 4 + 1, index * 4 + 2 }, { index * 4 + 2, index * 4 + 3, index * 4 } };
+			indices[index + 1] = { { index * 4 + 4, index * 4 + 5, index * 4 + 6 }, { index * 4 + 6, index * 4 + 7, index * 4 + 4 } };
 
 			for (int k = 0; k < 4; k++, vertex++) {
 				vertices[vertex] =
 				{
 					{
-						m_Cells[i][j].Position.x + vertexDirs[k].x * Cell::SIZE / 2,
-						m_Cells[i][j].Position.y + vertexDirs[k].y * Cell::SIZE / 2
+						m_Cells[i][j].Position.x + vertexDirs[k].x * Cell::OUTER / 2,
+						m_Cells[i][j].Position.y + vertexDirs[k].y * Cell::OUTER / 2
 					},
 					{ 0.2f, 0.3f, 0.8f, 1.0f }
 				};
 				vertices[vertex + 4] =
 				{
 					{
-						m_Cells[i][j].Position.x + vertexDirs[k].x * INNER_SIZE / 2,
-						m_Cells[i][j].Position.y + vertexDirs[k].y * INNER_SIZE / 2
+						m_Cells[i][j].Position.x + vertexDirs[k].x * Cell::INNER / 2,
+						m_Cells[i][j].Position.y + vertexDirs[k].y * Cell::INNER / 2
 					},
 					{ 0.1f, 0.1f, 0.1f, 1.0f }
 				};
 			}
-			vertex += 4;
 		}
 
 	m_IndexBuffer = std::make_unique<IndexBuffer>((unsigned int*)indices, indexCnt);
