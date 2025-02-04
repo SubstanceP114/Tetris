@@ -19,7 +19,7 @@ void Scene::Update(float deltaTime)
 			object = nullptr;
 		}
 	for (auto it = m_Objects.begin(); it != m_Objects.end();)
-		if (*it == nullptr) it = m_Objects.erase(it);
+		if ((*it)->IsDestroyed()) it = m_Objects.erase(it);
 		else it++;
 
 	while (!m_WaitQueue.empty()) {
