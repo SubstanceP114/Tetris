@@ -6,6 +6,7 @@
 #include "imgui/imgui.h"
 
 #define lerp(min, max, ratio) (min) * (1.0f - (ratio)) + (max) * (ratio)
+#define curve(num) (num) * (num)
 
 const float Cell::OUTER = 50.0f;
 const float Cell::INNER = Cell::OUTER * 0.96f;
@@ -85,7 +86,7 @@ void Map::Update(float deltaTime)
 	for (int i = 0, vertex = 0; i < COLUMN_COUNT; i++)
 		for (int j = 0; j < ROW_COUNT; j++, vertex += 8)
 			for (int k = 0; k < 4; k++) {
-				m_Vertices[vertex + k].color.r = lerp(0.2f, 0.8f, (timer > HALF ? HALF * 2 - timer : timer) / HALF);
+				m_Vertices[vertex + k].color.r = lerp(0.2f, 0.8f, curve((timer > HALF ? HALF * 2 - timer : timer) / HALF));
 				Vec4 color = m_Cells[i][j].Item ? ((Block*)m_Cells[i][j].Item)->GetColor() : Vec4{ 0.1f, 0.1f, 0.1f, 1.0f };
 				m_Vertices[vertex + 4 + k].color = { color.r, color.g, color.b, color.a };
 			}
