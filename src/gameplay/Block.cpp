@@ -1,5 +1,7 @@
 #include "Block.h"
 
+#include "Scene.h"
+
 #include <random>
 
 Block* Block::m_Current = nullptr;
@@ -13,34 +15,45 @@ void Block::Switch()
 {
 	m_Current = m_Preview;
 	m_Preview = Random();
-
+	Scene::Current().Add(m_Preview);
 }
 
 Block::Block(Vec2 cell1, Vec2 cell2, Vec2 cell3)
-	:m_Cells{ {0, 0} ,cell1, cell2, cell3 }, m_Color(), m_Rotation(0)
+	: m_Center{ Map::Current()->COLUMN_COUNT / 2, Map::Current()->ROW_COUNT - 1 }
+	, m_Offsets{ {0, 0} ,cell1, cell2, cell3 }, m_Color(), m_Rotation(0)
 {
 }
 
 Block::Block(const Block& block, Vec4 color)
-	:m_Cells{ block.m_Cells[0] ,block.m_Cells[1] ,block.m_Cells[2] ,block.m_Cells[3] }, m_Color(color), m_Rotation(0)
+	: m_Center{ Map::Current()->COLUMN_COUNT / 2, Map::Current()->ROW_COUNT - 1 }
+	, m_Offsets{ block.m_Offsets[0] ,block.m_Offsets[1] ,block.m_Offsets[2] ,block.m_Offsets[3] }, m_Color(color), m_Rotation(0)
 {
 }
 
 void Block::Init()
 {
+	if (m_Current == nullptr) m_Current = this;
+	else if (m_Preview == nullptr) m_Preview = this;
 }
 
 void Block::Update(float deltaTime)
 {
 	if (m_Current != this) return;
+	ForEach([this](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, this); });
 	static float timer = 0.0f;
 	const static float INTERVAL = 1.0f;
 	timer += deltaTime;
 	if (timer > INTERVAL) {
 		timer = 0.0f;
-		ForEach([](Vec2& cell) {
-			
-			});
+		ForEach([](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, nullptr); });
+		m_Center += Vec2{ 0, -1 };
+		if (All([](Vec2 cell) { return Map::Current()->IsValid(cell.x, cell.y) && Map::Current()->IsEmpty(cell.x, cell.y); }))
+			ForEach([this](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, this); });
+		else {
+			m_Center += Vec2{ 0, 1 };
+			ForEach([this](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, this); });
+			Switch();
+		}
 	}
 }
 
@@ -51,7 +64,7 @@ void Block::OnGuiLeft()
 void Block::OnGuiRight()
 {
 	if (m_Preview != this) return;
-	
+
 }
 
 Block* Block::Random()

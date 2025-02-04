@@ -1,10 +1,13 @@
 #include "Scene.h"
 
 #include "Map.h"
+#include "Block.h"
 
 void Scene::Init()
 {
 	Add(Map::Current());
+	Add(Block::Random());
+	Add(Block::Random());
 }
 
 void Scene::Update(float deltaTime)

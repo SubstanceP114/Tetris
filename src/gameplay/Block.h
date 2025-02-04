@@ -4,20 +4,33 @@
 
 #include <functional>
 
-struct Vec2 { int x, y; };
+struct Vec2
+{
+	int x, y;
+	inline Vec2 operator + (const Vec2& other) { return { x + other.x, y + other.y }; }
+	inline void operator += (const Vec2& other) { x += other.x, y += other.y; }
+};
 struct Vec4 { float r, g, b, a; };
 
 class Block : public Object
 {
 private:
-	Vec2 m_Cells[4];
+	Vec2 m_Center;
+	Vec2 m_Offsets[4];
 	Vec4 m_Color;
 	int m_Rotation;
 
 	static Block* m_Current;
 	static Block* m_Preview;
 
-	inline void ForEach(std::function<void(Vec2&)> func) { for (int i = 0; i < 4; i++) func(m_Cells[i]); }
+	inline void ForEach(std::function<void(Vec2)> func) { for (int i = 0; i < 4; i++) func(m_Offsets[i] + m_Center); }
+	inline bool All(std::function<bool(Vec2)> func)
+	{
+		for (int i = 0; i < 4; i++)
+			if (!func(m_Offsets[i] + m_Center))
+				return false;
+		return true;
+	}
 
 	void Rotate();
 	void Switch();
