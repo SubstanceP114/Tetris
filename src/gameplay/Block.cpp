@@ -7,8 +7,21 @@
 Block* Block::m_Current = nullptr;
 Block* Block::m_Preview = nullptr;
 
-void Block::Rotate()
+void Block::Rotate(bool anti = true)
 {
+	static auto rotate = [this](bool anti) {
+		for (int i = 1; i < 4; i++) {
+			Vec2 temp = m_Offsets[i];
+			m_Offsets[i] = { temp.y * anti ? -1 : 1, temp.x * anti ? 1 : -1 };
+		}};
+	ForEach([](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, nullptr); });
+	rotate(anti);
+	if (All([](Vec2 cell) { return Map::Current()->IsValid(cell.x, cell.y) && Map::Current()->IsEmpty(cell.x, cell.y); }))
+		ForEach([this](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, this); });
+	else {
+		rotate(!anti);
+		ForEach([this](Vec2 cell) { Map::Current()->SetCell(cell.x, cell.y, this); });
+	}
 }
 
 void Block::Switch()
@@ -20,13 +33,13 @@ void Block::Switch()
 
 Block::Block(Vec2 cell1, Vec2 cell2, Vec2 cell3)
 	: m_Center{ Map::Current()->COLUMN_COUNT / 2, Map::Current()->ROW_COUNT - 1 }
-	, m_Offsets{ {0, 0} ,cell1, cell2, cell3 }, m_Color(), m_Rotation(0)
+	, m_Offsets{ {0, 0} ,cell1, cell2, cell3 }, m_Color()
 {
 }
 
 Block::Block(const Block& block, Vec4 color)
 	: m_Center{ Map::Current()->COLUMN_COUNT / 2, Map::Current()->ROW_COUNT - 1 }
-	, m_Offsets{ block.m_Offsets[0] ,block.m_Offsets[1] ,block.m_Offsets[2] ,block.m_Offsets[3] }, m_Color(color), m_Rotation(0)
+	, m_Offsets{ block.m_Offsets[0] ,block.m_Offsets[1] ,block.m_Offsets[2] ,block.m_Offsets[3] }, m_Color(color)
 {
 }
 

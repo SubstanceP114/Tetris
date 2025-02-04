@@ -18,7 +18,6 @@ private:
 	Vec2 m_Center;
 	Vec2 m_Offsets[4];
 	Vec4 m_Color;
-	int m_Rotation;
 
 	static Block* m_Current;
 	static Block* m_Preview;
@@ -32,7 +31,7 @@ private:
 		return true;
 	}
 
-	void Rotate();
+	void Rotate(bool anti);
 	void Switch();
 
 	Block(Vec2 cell1, Vec2 cell2, Vec2 cell3);
