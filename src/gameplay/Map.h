@@ -22,6 +22,7 @@ private:
 	Cell m_Cells[12][18];
 	int m_LineCnt;
 	float m_Timer;
+	bool m_End;
 
 	std::unique_ptr<VertexArray> m_VertexArray;
 	std::unique_ptr<VertexBuffer> m_VertexBuffer;
@@ -66,6 +67,7 @@ public:
 	inline bool IsValid(int x, int y) const { return x >= 0 && x < COLUMN_COUNT && y >= 0 && y < ROW_COUNT; }
 	inline bool IsEmpty(int x, int y) const { return m_Cells[x][y].Item == nullptr; }
 	inline void SetCell(int x, int y, Object* item) { m_Cells[x][y].Item = item; }
+	inline void End() { m_End = true; }
 
 	void Refresh();
 

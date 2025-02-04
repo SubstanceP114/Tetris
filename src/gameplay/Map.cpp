@@ -14,7 +14,7 @@ const float Cell::INNER = Cell::OUTER * 0.96f;
 Map* Map::m_Current = nullptr;
 
 Map::Map()
-	: m_Cells(), m_LineCnt(0), m_Timer(0.0f)
+	: m_Cells(), m_LineCnt(0), m_Timer(0.0f), m_End(false)
 	, m_Vertices(nullptr), m_Indices(nullptr)
 {
 }
@@ -78,6 +78,8 @@ void Map::Init()
 
 void Map::Update(float deltaTime)
 {
+	if (m_End) return;
+
 	const static float HALF = 0.5f;
 	static float timer = 0.0f;
 	m_Timer += deltaTime;
@@ -103,6 +105,8 @@ void Map::OnGuiLeft()
 	ImGui::SetWindowFontScale(2.0f);
 	ImGui::TextColored({ 0.8f, 0.3f, 0.8f, 1.0f }, "You've cleared %d lines!", m_LineCnt);
 	ImGui::TextColored({ 0.2f, 0.3f, 0.8f, 1.0f }, "It's passed %.3f seconds...", m_Timer);
+	ImGui::SetWindowFontScale(3.0f);
+	if (m_End) ImGui::TextColored({ 1.0f, 0.0f, 0.0f, 1.0f }, "END");
 	ImGui::SetWindowFontScale(1.5f);
 }
 

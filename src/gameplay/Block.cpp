@@ -45,8 +45,14 @@ void Block::Switch()
 {
 	Map::Current()->Refresh();
 	m_Current = m_Preview;
-	m_Preview = Random();
-	Scene::Current().Add(m_Preview);
+	if (m_Current->All([](Vec2 cell) { return Map::Current()->IsValid(cell.x, cell.y) && Map::Current()->IsEmpty(cell.x, cell.y); })) {
+		m_Preview = Random();
+		Scene::Current().Add(m_Preview);
+	}
+	else {
+		m_Current = nullptr;
+		Map::Current()->End();
+	}
 }
 
 Block::Block(Vec2 cell1, Vec2 cell2, Vec2 cell3)
