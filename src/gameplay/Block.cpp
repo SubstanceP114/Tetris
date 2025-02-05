@@ -1,6 +1,7 @@
 #include "Block.h"
 
 #include "Scene.h"
+#include "Camera.h"
 
 #include "imgui/imgui.h"
 
@@ -83,17 +84,22 @@ void Block::Update(float deltaTime)
 	static bool pressed = false;
 	static unsigned int current = 0;
 	static float timer = 0.0f;
-	const static float INTERVAL = 1.0f;
+	const static float INTERVAL = 60.0f / 170.0f * 2;
 	timer += deltaTime;
 	if (timer > INTERVAL) {
 		timer = 0.0f;
 		Move({ 0,-1 });
 	}
-	ELIF(GLFW_KEY_S, Move({ 0,-1 }));
 	ELIF(GLFW_KEY_A, Move({ -1, 0 }));
 	ELIF(GLFW_KEY_D, Move({ 1, 0 }));
 	ELIF(GLFW_KEY_Q, Rotate(false));
 	ELIF(GLFW_KEY_E, Rotate(true));
+	else if (glfwGetKey(Scene::Current().GetWindow(), GLFW_KEY_S) == GLFW_PRESS) Move({ 0,-1 });
+}
+
+void Block::Render()
+{
+
 }
 
 void Block::OnGuiLeft()

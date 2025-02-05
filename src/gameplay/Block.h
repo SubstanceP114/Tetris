@@ -41,6 +41,7 @@ private:
 public:
 	void Init() override;
 	void Update(float deltaTime) override;
+	void Render() override;
 	void OnGuiLeft() override;
 	void OnGuiRight() override;
 

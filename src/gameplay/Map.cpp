@@ -80,7 +80,7 @@ void Map::Update(float deltaTime)
 {
 	if (m_End) return;
 
-	const static float HALF = 0.5f;
+	const static float HALF = 60.0f / 170.0f;
 	static float timer = 0.0f;
 	m_Timer += deltaTime;
 	timer += deltaTime;

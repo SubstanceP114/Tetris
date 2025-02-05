@@ -3,12 +3,20 @@
 #include "Map.h"
 #include "Block.h"
 
+#include<Windows.h>
+#include<mmsystem.h>
+
+#pragma comment (lib,"winmm.lib")
+
 void Scene::Init(GLFWwindow* window)
 {
 	m_Window = window;
 	Add(Map::Current());
 	Add(Block::Random());
 	Add(Block::Random());
+
+	mciSendString("open res/musics/Tetoris.mp3 alias teto ", 0, 0, 0);
+	mciSendString("play teto repeat", 0, 0, 0);
 }
 
 void Scene::Update(float deltaTime)
