@@ -20,6 +20,11 @@ private:
 	Vec2 m_Offsets[4];
 	Vec4 m_Color;
 
+	static std::unique_ptr<VertexArray> m_VertexArray;
+	static std::unique_ptr<VertexBuffer> m_VertexBuffer;
+	static std::unique_ptr<IndexBuffer> m_IndexBuffer;
+	static std::unique_ptr<Shader> m_Shader;
+
 	static Block* m_Current;
 	static Block* m_Preview;
 

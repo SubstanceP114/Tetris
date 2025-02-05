@@ -7,9 +7,33 @@
 
 #include <random>
 
-#define ELIF(key, func) \
+#define elif(key, func) \
 else if (!pressed && glfwGetKey(Scene::Current().GetWindow(), (key)) == GLFW_PRESS) { pressed = true; current = (key); (func); }\
 else if (pressed && current == (key) && glfwGetKey(Scene::Current().GetWindow(), (key)) == GLFW_RELEASE) pressed = false
+
+#define index_block(i) (i) * 4, (i) * 4 + 1, (i) * 4 + 2, (i) * 4 + 2, (i) * 4 + 3, (i) * 4
+#define index_cell(i) index_block((i) * 2), index_block((i) * 2 + 1)
+#define INDEX_PREVIEW index_cell(0), index_cell(1), index_cell(2), index_cell(3)
+
+const float OUTER = 25.0f, INNER = 24.0f;
+#define VERTEX_COLOR_OUTER 1.0f - m_Color.r, 1.0f - m_Color.g, 1.0f - m_Color.b, 1.0f - m_Color.a
+#define VERTEX_COLOR_INNER m_Color.r, m_Color.g, m_Color.b, m_Color.a
+#define vertex_offset(i) m_Offsets[i].x * 2 * OUTER, m_Offsets[i].y * 2 * OUTER
+#define vertex_cell(i)\
+-OUTER, OUTER, VERTEX_COLOR_OUTER, vertex_offset(i), \
+-OUTER,-OUTER, VERTEX_COLOR_OUTER, vertex_offset(i), \
+ OUTER,-OUTER, VERTEX_COLOR_OUTER, vertex_offset(i), \
+ OUTER, OUTER, VERTEX_COLOR_OUTER, vertex_offset(i), \
+-INNER, INNER, VERTEX_COLOR_INNER, vertex_offset(i), \
+-INNER,-INNER, VERTEX_COLOR_INNER, vertex_offset(i), \
+ INNER,-INNER, VERTEX_COLOR_INNER, vertex_offset(i), \
+ INNER, INNER, VERTEX_COLOR_INNER, vertex_offset(i)
+#define VERTEX_PREVIEW vertex_cell(0), vertex_cell(1), vertex_cell(2), vertex_cell(3)
+
+std::unique_ptr<VertexArray> Block::m_VertexArray = nullptr;
+std::unique_ptr<VertexBuffer> Block::m_VertexBuffer = nullptr;
+std::unique_ptr<IndexBuffer> Block::m_IndexBuffer = nullptr;
+std::unique_ptr<Shader> Block::m_Shader = nullptr;
 
 Block* Block::m_Current = nullptr;
 Block* Block::m_Preview = nullptr;
@@ -72,8 +96,34 @@ Block::Block(const Block& block, Vec4 color)
 
 void Block::Init()
 {
-	if (m_Current == nullptr) m_Current = this;
-	else if (m_Preview == nullptr) m_Preview = this;
+	float vertices[] = { VERTEX_PREVIEW };
+	if (m_Current == nullptr) {
+		m_Current = this;
+		struct {
+			struct { float x, y; } position;
+			struct { float r, g, b, a; } color;
+			struct { float x, y; } offset;
+		} vertices[4 * 2 * 4];
+		m_VertexBuffer = std::make_unique<VertexBuffer>(vertices, sizeof(vertices), GL_DYNAMIC_DRAW);
+
+		VertexBufferLayout layout;
+		layout.Push<float>(2);
+		layout.Push<float>(4);
+		layout.Push<float>(2);
+		m_VertexArray = std::make_unique<VertexArray>();
+		m_VertexArray->AddBuffer(*m_VertexBuffer, layout);
+
+		unsigned int indices[]{ INDEX_PREVIEW };
+		m_IndexBuffer = std::make_unique<IndexBuffer>(&indices[0], 4 * 2 * 6);
+
+		auto mvp = Camera::Right().GetProj() * Camera::Right().GetView() *
+			glm::translate(glm::mat4(1.0f), glm::vec3(Map::Current()->ORIGIN.X / 2, Map::Current()->SIZE.HEIGHT - 100.0f, 0.0f));
+		m_Shader = std::make_unique<Shader>("res/shaders/Cell.shader");
+		m_Shader->Bind();
+		m_Shader->SetUniformMat4f("u_MVP", mvp);
+	}
+	else if (m_Preview == nullptr)  m_Preview = this;
+	m_VertexBuffer->UpdateData(&vertices[0], sizeof(vertices));
 }
 
 void Block::Update(float deltaTime)
@@ -90,16 +140,18 @@ void Block::Update(float deltaTime)
 		timer = 0.0f;
 		Move({ 0,-1 });
 	}
-	ELIF(GLFW_KEY_A, Move({ -1, 0 }));
-	ELIF(GLFW_KEY_D, Move({ 1, 0 }));
-	ELIF(GLFW_KEY_Q, Rotate(false));
-	ELIF(GLFW_KEY_E, Rotate(true));
+	elif(GLFW_KEY_A, Move({ -1, 0 }));
+	elif(GLFW_KEY_D, Move({ 1, 0 }));
+	elif(GLFW_KEY_Q, Rotate(false));
+	elif(GLFW_KEY_E, Rotate(true));
 	else if (glfwGetKey(Scene::Current().GetWindow(), GLFW_KEY_S) == GLFW_PRESS) Move({ 0,-1 });
 }
 
 void Block::Render()
 {
+	if (m_Preview != this) return;
 
+	Renderer::Draw(*m_VertexArray, *m_IndexBuffer, *m_Shader);
 }
 
 void Block::OnGuiLeft()
